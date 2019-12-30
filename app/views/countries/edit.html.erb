@@ -1,0 +1,49 @@
+<div class="container">
+  <%= form_for @country do |f| %>
+    <fieldset>
+      <!-- Form Name -->
+      <legend><center><h2><b><%= @country.name %></b></h2></center></legend><br>
+      <!-- Text input-->
+      <div class="form-group">
+        <label class="col-md-4 control-label">Name</label>  
+        <div class="col-md-4 inputGroupContainer">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+            <%= text_field_tag :country, :city, value: @country.name, disabled: true, class: "form-control" %>
+          </div>
+        </div>
+      </div>
+      <div class="form-group"> 
+        <label class="col-md-4 control-label">Select a Default City</label>
+        <div class="col-md-4 selectContainer">
+          <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
+            <%= f.select :cities, options_for_select(@country.cities.collect{|c| [c.name, c.id]}), {include_blank: true}, {class: "form-control selectpicker"} %>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-4 control-label"></label>
+        <div class="col-md-4"><br>
+          &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<%= link_to('Upload', "#", onclick:  "selectCity()", class: "btn btn-primary waves-effect waves-light") %>
+
+        </div>
+      </div>
+    </fieldset>
+  <%end%>
+</div>
+<script type="text/javascript">
+  $(document).ready(function () {
+      $('select').selectize({
+          sortField: 'text'
+      });
+  });
+
+  function selectCity(){
+    selectedValue = $(".selectize-input .item").first().text()
+    alert("Hello from <%= @country.name %>," + selectedValue)
+    return false
+  }
+
+  </script>
+

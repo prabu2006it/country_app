@@ -1,0 +1,82 @@
+<div id="wrapper">
+  <div class="main-header">  
+    <div class="head1">Country List</div>
+    <div class="head2">
+      <button type="button" data-toggle="modal" data-target="#countryModal">Import Countries</button>
+    </div>
+  </div>
+  <table id="countries" cellspacing="0" cellpadding="0">
+    <thead>
+    <tr>
+      <th><span>Country</span></th>
+      <th><span>City</span></th>
+      <th><span>Latitude</span></th>
+      <th><span>Longitude</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @cities.each do |city| %>
+        <tr>
+          <td class="lalign"><%= link_to(city.country&.name, edit_country_path(city.country.id), ajax: true) %></td>
+          <td><%= city.name %></td>
+          <td><%= city.latitude %></td>
+          <td><%= city.longitude %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <div class="fnt-1_5" style="float: right; padding-bottom: 10px;">
+  <%= will_paginate @cities %>
+</div>
+</div>
+
+<div class="modal fade" id="countryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-full-height modal-right modal-notify modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <p class="heading lead fnt-1_5" style="margin-top: 1rem">Upload Countries</p>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" class="white-text">×</span>
+        </button>
+      </div>
+      <div class="modal-body fnt-1_5">
+        <%= form_tag(import_countries_path, name: "import", :multipart => true, id: "inport-form", :remote => true) do %>
+          <div class="form-check mb-4">
+            <%= file_field_tag :file, accept: ".csv" %>
+            <label class="form-check-label"></label>
+          </div>
+          <p class="text-center">
+            <%= link_to 'Click here', '/countries.csv' %> to download a sample template for CSV file.
+          </p>
+          <div class="modal-footer justify-content-center">
+            <%#= submit_tag "Upload"%>
+            <%= link_to('Upload', "#", onclick:  "uploadCountries()", class: "btn btn-primary waves-effect waves-light") %>
+            <a type="button" class="btn btn-outline-primary waves-effect" data-dismiss="modal">Cancel</a>
+          </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  function uploadCountries(){
+    formData = new FormData($("#import-form")[0])
+    var fileInput = document.querySelector('form input[type=file]');
+    var attachment = fileInput.files[0];
+    alert(attachment)
+    if (attachment != undefined) {
+      var formData = new FormData(); 
+      formData.append('attachment', attachment, attachment.name);
+      $.ajax({
+        url: '/countries/import',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false
+      });
+    } else {
+      alert("Please upload a CSV.")
+    }
+  }
+
+</script>
